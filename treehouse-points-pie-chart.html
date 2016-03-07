@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Treehouse points pie chart</title>
+</head>
+<body>
+
+  <div id="TrhChart" style="width: 100%; height: 300px"></div>
+  
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.1/jquery.min.js"></script>
+  <script type="text/javascript" src="http://code.highcharts.com/highcharts.js"></script>
+  
+  <script>
+    function buildPie(data) {
+    	// Define the same colors that Treehouse uses
+    	var colors = {
+    		'Android': '#5cb860',
+    		'Business': '#F9845B',
+    		'C#': '#9e4d83',
+    		'CSS': '#3079AB',
+    		'Databases': '#eb7728',
+    		'Design': '#e59a13',
+    		'Development Tools': '#637a91',
+    		'Digital Literacy': '#c38cd4',
+    		'Game Development': '#20898c',
+    		'HTML': '#39ADD1',
+    		'iOS': '#53BBB4',
+    		'Java': '#2c9676',
+    		'JavaScript': '#c25975',
+    		'PHP': '#838CC7',
+    		'Python': '#f092b0',
+    		'Ruby': '#e15258',
+    		'Wordpress': '#838CC7'
+    	};
+    
+    	// Make array of treehouse points
+    	var pointsArray = []
+    	for (var key in data) {
+    
+    		// Remove things that we dont have points in + remove total
+    		if (key != 'total' && data[key] != 0) {
+    			var o = { name: key, y: data[key] }
+    		
+    			// Add corresponding colors to each topic
+    			for (var c in colors) {
+    				if (key == c) {
+    					o['color'] = colors[c];
+    				}
+    			}
+    			pointsArray.push(o)	
+    		}
+    	};
+    
+    	return pointsArray;
+    };
+    
+    jQuery(function($) {
+      // Define wrapper element + the URL
+    	var $TrhChart = $('#TrhChart'),
+          username = 'jamierobertson', // change this to your username
+          url = 'https://teamtreehouse.com/' + username + '.json';
+    	
+    	$.getJSON(url, function(data) {	
+    		var pointsArray = buildPie(data.points);
+    		
+    		$TrhChart.highcharts({
+    			chart: {
+    				type: 'pie'
+    			},
+    			credits: {
+    				enabled: false
+    			},
+    			plotOptions: {
+    				pie: {
+    					animation: true,
+    					borderWidth: 0,
+    					center: ['50%', '50%'],
+    					cursor: 'pointer',
+    					dataLabels: {
+    						enabled: false
+    					},
+    					innerSize: '60%',
+    					startAngle: 0
+    				}
+    			},
+    			series: [{
+    				data: pointsArray
+    			}],
+    			tooltip: {
+    				style: { 'color': '#eee', 'cursor': 'default', 'fontSize': '12px', 'padding': '10px', 'pointerEvents': 'none', 'whiteSpace': 'nowrap'},
+    				backgroundColor: 'rgba(40, 40, 40)',
+    				pointFormat: '<span style="color:{point.color}">\u25CF</span> points: <b>{point.y}</b><br/>'
+    			},
+    			title: {
+    				text: null
+    			}
+    		});
+    	});
+    
+    });
+  </script>
+
+</body>
+</html>
